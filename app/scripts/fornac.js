@@ -985,6 +985,18 @@ export function FornaContainer(element, passedOptions) {
             //return d3.select(this);
         }
     }
+	
+		
+	function nodeDistance(x1,y1,x2,y2){
+		var x = x2-x1;
+		var y = y2-y1;
+		
+		return Math.sqrt(   (Math.pow(x, 2) + Math.pow(y,2) ) );
+	}
+	
+	function nodeSlope(x1,y1,x2,y2){
+		return ((y2-y1)/(x2-x1));
+	}
 
     function dragstarted(d) {
         d3.event.sourceEvent.stopPropagation();
