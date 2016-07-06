@@ -926,6 +926,29 @@ export function FornaContainer(element, passedOptions) {
 
         if (bbTransform === null)
             return;
+		
+		
+		var nodeArray = [];
+		self.graph.nodes.map(function(d,i){nodeArray[i] = d});
+	//	console.log(nodeArray[2].x)
+		
+		// computes nodes with longest distance between them (longest axis of graph)
+		var maxNode1;
+		var maxNode2;
+		var maxDistance = 0;
+		
+		for (var i = 0; i < nodeArray.length; i++) {
+			var upperNode = nodeArray[i];
+			for (var j = 0; j < nodeArray.length; j++) {
+				var lowerNode = nodeArray[j];
+				var tempDistance = Math.abs(nodeDistance(lowerNode.x, lowerNode.y, upperNode.x, upperNode.y))
+				if(tempDistance > maxDistance){
+					maxDistance = tempDistance;
+					maxNode1 = upperNode;
+					maxNode2 = lowerNode;
+				}
+			}
+		}
 
         // do the actual moving
         vis.transition().attr('transform',
