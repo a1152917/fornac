@@ -949,6 +949,13 @@ export function FornaContainer(element, passedOptions) {
 				}
 			}
 		}
+		
+		// computes the slope of the line between the most distant nodes 
+		var slope = 0;
+		slope = nodeSlope(maxNode1.x,maxNode1.y,maxNode2.x,maxNode2.y);
+		// computes the rotation angle for putting the longest axis of the graph perpendicular to the x axis. 
+		var rad2deg = 180/Math.PI;
+		var angle = Math.atan(slope) * rad2deg;
 
         // do the actual moving
         vis.transition().attr('transform',
