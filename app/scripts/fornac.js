@@ -2,7 +2,7 @@
 * Date: 2015-03-15
 */
 
-import '../styles/fornac.css';
+//import '../styles/fornac.css';
 
 import d3 from 'd3';
 
@@ -11,7 +11,7 @@ import {simpleXyCoordinates} from './simplernaplot.js';
 import {ColorScheme} from 'rnautils';
 import {NAView} from './naview/naview.js'
 //import 'jquery' from jquery;
-//
+
 
 export {RNAGraph} from './rnagraph.js';
 
@@ -926,40 +926,11 @@ export function FornaContainer(element, passedOptions) {
 
         if (bbTransform === null)
             return;
-		
-		
-		var nodeArray = [];
-		self.graph.nodes.map(function(d,i){nodeArray[i] = d});
-	//	console.log(nodeArray[2].x)
-		
-		// computes nodes with longest distance between them (longest axis of graph)
-		var maxNode1;
-		var maxNode2;
-		var maxDistance = 0;
-		
-		for (var i = 0; i < nodeArray.length; i++) {
-			var upperNode = nodeArray[i];
-			for (var j = 0; j < nodeArray.length; j++) {
-				var lowerNode = nodeArray[j];
-				var tempDistance = Math.abs(nodeDistance(lowerNode.x, lowerNode.y, upperNode.x, upperNode.y))
-				if(tempDistance > maxDistance){
-					maxDistance = tempDistance;
-					maxNode1 = upperNode;
-					maxNode2 = lowerNode;
-				}
-			}
-		}
-		
-		// computes the slope of the line between the most distant nodes 
-		var slope = 0;
-		slope = nodeSlope(maxNode1.x,maxNode1.y,maxNode2.x,maxNode2.y);
-		// computes the rotation angle for putting the longest axis of the graph perpendicular to the x axis. 
-		var rad2deg = 180/Math.PI;
-		var angle = Math.atan(slope) * rad2deg;
 
         // do the actual moving
+        var oldTrans = vis.attr('transform');
         vis.transition().attr('transform',
-                 'translate(' + bbTransform.translate + ')' + ' scale(' + bbTransform.scale + ')').duration(duration);
+                 oldTrans + ' translate(' + bbTransform.translate + ')' + ' scale(' + bbTransform.scale + ')').duration(duration);
 
         // tell the zoomer what we did so that next we zoom, it uses the
         // transformation we entered here
@@ -1015,18 +986,6 @@ export function FornaContainer(element, passedOptions) {
             //return d3.select(this);
         }
     }
-	
-		
-	function nodeDistance(x1,y1,x2,y2){
-		var x = x2-x1;
-		var y = y2-y1;
-		
-		return Math.sqrt(   (Math.pow(x, 2) + Math.pow(y,2) ) );
-	}
-	
-	function nodeSlope(x1,y1,x2,y2){
-		return ((y2-y1)/(x2-x1));
-	}
 
     function dragstarted(d) {
         d3.event.sourceEvent.stopPropagation();
@@ -1609,6 +1568,17 @@ export function FornaContainer(element, passedOptions) {
 
         return nodeTooltips[d.nodeType];
     };
+	
+	function nodeDistance(x1,y1,x2,y2){
+		var x = x2-x1;
+		var y = y2-y1;
+		
+		return Math.sqrt(   (Math.pow(x, 2) + Math.pow(y,2) ) );
+	}
+	
+	function nodeSlope(x1,y1,x2,y2){
+		return ((y2-y1)/(x2-x1));
+	}
 
     self.update = function () {
         self.force.nodes(self.graph.nodes)
@@ -1625,6 +1595,41 @@ export function FornaContainer(element, passedOptions) {
         .classed('link', true)
         .attr('link_type', function(d) { return d.linkType; } )
         .attr('class', function(d) { return d3.select(this).attr('class') + ' ' + d.linkType; });
+		
+		
+		
+			var nodeArray = [];
+		self.graph.nodes.map(function(d,i){nodeArray[i] = d});
+
+		var maxNode1;
+		var maxNode2;
+		var maxDistance = 0;
+		
+		for (var i = 0; i < nodeArray.length; i++) {
+			var upperNode = nodeArray[i];
+			for (var j = 0; j < nodeArray.length; j++) {
+				var lowerNode = nodeArray[j];
+				var tempDistance = Math.abs(nodeDistance(lowerNode.x, lowerNode.y, upperNode.x, upperNode.y))
+				if(tempDistance > maxDistance){
+					maxDistance = tempDistance;
+					maxNode1 = upperNode;
+					maxNode2 = lowerNode;
+				}
+			}
+		}
+		
+	
+		var slope = 0;
+		slope = nodeSlope(maxNode1.x,maxNode1.y,maxNode2.x,maxNode2.y);
+		var rad2deg = 180/Math.PI;
+		var angle = Math.atan(slope) * rad2deg;
+		
+		console.log("aaaaaaaaaaaaaaaaaaa")
+		console.log(angle)
+		
+		
+		vis.attr('transform', 'rotate('+ angle +')');
+        var sfdad = vis.attr('transform');
 
         var linksEnter = allLinks.enter();
         self.createNewLinks(linksEnter);
@@ -1662,6 +1667,7 @@ export function FornaContainer(element, passedOptions) {
 
             xlink.on('click', linkClick);
 
+            /*
             self.force.on('tick', function() {
                 var q = d3.geom.quadtree(realNodes);
                 var i = 0;
@@ -1698,6 +1704,7 @@ export function FornaContainer(element, passedOptions) {
                 }
 
             });
+            */
             
         self.changeColorScheme(self.colorScheme);
 
