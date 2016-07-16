@@ -1618,6 +1618,13 @@ export function FornaContainer(element, passedOptions) {
 			}
 		}
 		
+		var x_dist = maxNode2.x - maxNode1.x;
+		var y_dist = maxNode2.y - maxNode1.y;
+		
+		console.log("new dist x y ")
+		console.log(x_dist);
+		console.log(y_dist);
+		
 	
 		var slope = 0;
 		slope = nodeSlope(maxNode1.x,maxNode1.y,maxNode2.x,maxNode2.y);
@@ -1628,7 +1635,7 @@ export function FornaContainer(element, passedOptions) {
 		console.log(angle)
 		
 		
-		vis.attr('transform', 'rotate('+ angle +')');
+		vis.attr('transform', 'rotate(' + angle + ',' +x_dist+ ',' +y_dist+')'       );
         var sfdad = vis.attr('transform');
 
         var linksEnter = allLinks.enter();
