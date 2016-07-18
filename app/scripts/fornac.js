@@ -875,8 +875,50 @@ export function FornaContainer(element, passedOptions) {
     }
 
     function redraw() {
+		
+		var nodeArray = [];
+		self.graph.nodes.map(function(d,i){nodeArray[i] = d});
+
+		var maxNode1;
+		var maxNode2;
+		var maxDistance = 0;
+		
+		for (var i = 0; i < nodeArray.length; i++) {
+			var upperNode = nodeArray[i];
+			for (var j = 0; j < nodeArray.length; j++) {
+				var lowerNode = nodeArray[j];
+				var tempDistance = Math.abs(nodeDistance(lowerNode.x, lowerNode.y, upperNode.x, upperNode.y))
+				if(tempDistance > maxDistance){
+					maxDistance = tempDistance;
+					maxNode1 = upperNode;
+					maxNode2 = lowerNode;
+				}
+			}
+		}
+		
+		var x_dist = maxNode2.x - maxNode1.x;
+		var y_dist = maxNode2.y - maxNode1.y;
+		
+		console.log("new dist x y ")
+		console.log(x_dist);
+		console.log(y_dist);
+		
+	
+		var slope = 0;
+		slope = nodeSlope(maxNode1.x,maxNode1.y,maxNode2.x,maxNode2.y);
+		var rad2deg = 180/Math.PI;
+		var angle = Math.atan(slope) * rad2deg;
+		
+		console.log("aaaaaaaaaaaaaaaaaaa")
+		console.log(angle)
+		
+		
+		
+		
         vis.attr('transform',
                  'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+				 
+		vis.attr('transform', 'rotate(' + angle + ',' +x_dist+ ',' +y_dist+')'       );
     }
 
     self.getBoundingBoxTransform = function() {
@@ -1598,7 +1640,7 @@ export function FornaContainer(element, passedOptions) {
 		
 		
 		
-			var nodeArray = [];
+		var nodeArray = [];
 		self.graph.nodes.map(function(d,i){nodeArray[i] = d});
 
 		var maxNode1;
@@ -1635,7 +1677,9 @@ export function FornaContainer(element, passedOptions) {
 		console.log(angle)
 		
 		
-		vis.attr('transform', 'rotate(' + angle + ',' +x_dist+ ',' +y_dist+')'       );
+		
+				vis.attr('transform', 'rotate(' + angle + ',' +x_dist+ ',' +y_dist+')'       );
+		//
         var sfdad = vis.attr('transform');
 
         var linksEnter = allLinks.enter();
